@@ -1,0 +1,9 @@
+{
+  "items": [
+    {"name": "Молоко", "price": 3.49, "margin": 0.62},
+    {"name": "Хлеб", "price": 1.85, "margin": 0.45},
+    {"name": "Кофе", "price": 12.90, "margin": 3.20}
+  ],
+  "key": "margin",
+  "reverse": true
+}

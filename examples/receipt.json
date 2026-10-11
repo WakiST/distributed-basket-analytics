@@ -1,0 +1,8 @@
+{
+  "items": [
+    {"name": "Молоко", "price": 3.49, "quantity": 2, "discount_percent": 10},
+    {"name": "Хлеб", "price": 1.85, "quantity": 1},
+    {"name": "Кофе", "price": 12.90, "quantity": 1, "discount_percent": 15}
+  ],
+  "discount_percent": 5
+}
