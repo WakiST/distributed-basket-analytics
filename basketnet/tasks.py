@@ -38,6 +38,9 @@ def validate(operation, data):
             for value in array(data):
                 number(value)
         elif isinstance(data, dict):
+            iterations = data.get("work_iterations", 0)
+            if type(iterations) is not int or not 0 <= iterations <= 2000000:
+                raise ValueError("Объём демонстрационного расчёта: 0-2 000 000 итераций")
             percent(data.get("discount_percent", 0))
             for item in array(data.get("items")):
                 if not isinstance(item, dict):
@@ -54,7 +57,7 @@ def validate(operation, data):
         if isinstance(data, dict):
             key = data.get("key", "price")
             if not isinstance(key, str) or not isinstance(data.get("reverse", False), bool):
-                raise ValueError("key — строка, reverse — логическое значение")
+                raise ValueError("key - строка, reverse - логическое значение")
             for item in values:
                 if not isinstance(item, dict):
                     raise ValueError("items должен содержать объекты")
@@ -79,7 +82,7 @@ def validate(operation, data):
                 raise ValueError("В чеке допускается до 100 товаров")
             for item in basket:
                 if not isinstance(item, str) or not item.strip() or len(item) > 120:
-                    raise ValueError("Название товара — непустая строка до 120 символов")
+                    raise ValueError("Название товара - непустая строка до 120 символов")
             total += len(basket)
         if total > 20000:
             raise ValueError("Допускается до 20 000 позиций во всех чеках")
@@ -104,9 +107,14 @@ def execute(operation, data):
             gross += line
             item_discounts += (line * Decimal(str(item.get("discount_percent", 0))) / hundred).quantize(cent, ROUND_HALF_UP)
         order_discount = ((gross - item_discounts) * Decimal(str(data.get("discount_percent", 0))) / hundred).quantize(cent, ROUND_HALF_UP)
-        return {"subtotal": str(gross.quantize(cent)), "item_discount": str(item_discounts.quantize(cent)),
+        result = {"subtotal": str(gross.quantize(cent)), "item_discount": str(item_discounts.quantize(cent)),
                 "order_discount": str(order_discount), "discount": str((item_discounts + order_discount).quantize(cent)),
                 "total": str((gross - item_discounts - order_discount).quantize(cent))}
+        if data.get("work_iterations", 0):
+            # Синтетическая нагрузка генератора: реальный расчёт CPU, без задержки sleep.
+            result["work_digest"] = hashlib.pbkdf2_hmac("sha256", str(result).encode(), b"BasketNet-demo", data["work_iterations"]).hex()
+            result["work_iterations"] = data["work_iterations"]
+        return result
     if operation == "sort":
         if isinstance(data, list):
             return sorted(data)

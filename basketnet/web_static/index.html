@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>BasketNet | Магазин каждый день</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="ribbon">
+      Хорошие продукты. Простые покупки. <span>Учебный магазин без оплаты и доставки</span>
+    </div>
+    <header>
+      <a href="#catalog" class="brand"
+        ><img src="/favicon.svg" width="38" height="38" alt="" /><span
+          >Basket<span class="accent">Net</span><small>ВСЁ ДЛЯ ВАШЕГО ДНЯ</small></span
+        ></a
+      >
+      <nav aria-label="Основная навигация">
+        <button data-view="catalog" class="nav active">Каталог</button
+        ><button data-view="orders" class="nav" id="orders-nav" hidden>Мои заказы</button
+        ><button data-view="admin" class="nav" id="admin-nav" hidden>Администратор</button>
+      </nav>
+      <div class="header-actions">
+        <button id="login-button" class="text-button">Войти</button
+        ><button id="logout-button" class="text-button" hidden>Выйти</button
+        ><button id="cart-button" class="button dark">
+          Корзина <span id="cart-count">0</span>
+        </button>
+      </div>
+    </header>
+    <main>
+      <section id="catalog-view">
+        <div class="hero">
+          <div>
+            <div class="eyebrow">СВЕЖИЙ ВЗГЛЯД НА ПРИВЫЧНОЕ</div>
+            <h1>Всё хорошее<br />начинается с корзины.</h1>
+            <p>
+              Продукты на каждый день и маленькие радости.<br />Выбирайте любимое, мы посчитаем
+              выгоду.
+            </p>
+            <button id="sale-button" class="button dark">
+              За покупками со скидкой <span>↗</span>
+            </button>
+            <div class="hero-foot">
+              Свежий выбор <span>•</span> Личные купоны <span>•</span> Прозрачный чек
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="orbit"></div>
+            <span class="art avocado">🥑</span><span class="art strawberry">🍓</span
+            ><span class="art bread">🥐</span>
+            <div class="art-note">Больше вкуса.<br /><strong>Меньше забот.</strong></div>
+            <span class="round-label">до -20%<small>на любимое</small></span>
+          </div>
+        </div>
+        <div class="catalog-heading">
+          <div>
+            <div class="eyebrow">СОБЕРИТЕ СВОЁ</div>
+            <h2>Сегодня в корзину</h2>
+          </div>
+          <div class="catalog-tools">
+            <label class="search"
+              ><span>⌕</span
+              ><input
+                id="search"
+                type="search"
+                placeholder="Найти что-нибудь вкусное"
+                aria-label="Поиск товара" /></label
+            ><select id="sort" aria-label="Сортировка">
+              <option value="default">По умолчанию</option>
+              <option value="price">Сначала дешевле</option>
+              <option value="expensive">Сначала дороже</option>
+              <option value="discount">Больше скидка</option>
+            </select>
+          </div>
+        </div>
+        <div id="categories" class="chips" aria-label="Категории"></div>
+        <div id="catalog" class="product-grid"></div>
+        <p id="catalog-empty" class="empty" hidden>
+          Ничего не найдено. Попробуйте другую категорию или название.
+        </p>
+        <div class="welcome-banner">
+          <span class="gift">✧</span>
+          <div>
+            <h3>Первый заказ чуть приятнее</h3>
+            <p>Зарегистрируйтесь и получите личный купон WELCOME10 на скидку 10%.</p>
+          </div>
+          <button id="welcome-button" class="button secondary">Мои купоны ↗</button>
+        </div>
+      </section>
+      <section id="cart-view" hidden>
+        <div class="page-title">
+          <div>
+            <div class="eyebrow">ВАШ ВЫБОР</div>
+            <h1>Корзина</h1>
+          </div>
+          <button data-view="catalog" class="button secondary">Продолжить покупки</button>
+        </div>
+        <div class="cart-layout">
+          <div id="cart-items" class="panel"></div>
+          <aside class="panel checkout">
+            <h2>Ваш заказ</h2>
+            <label for="coupon">Код купона</label>
+            <div class="coupon-entry"><input id="coupon" placeholder="Например, SUMMER15" maxlength="20" autocomplete="off">
+              <button id="apply-coupon" type="button" class="button secondary">Применить</button></div>
+            <div id="coupon-message" class="small" role="status"></div>
+            <button id="remove-coupon" type="button" class="text-button" hidden>Убрать купон</button>
+            <div id="personal-coupons" class="chips"></div>
+            <div id="cart-totals"></div>
+            <button id="checkout" class="button dark full">Оформить заказ →</button>
+            <p class="muted small">
+              Сначала скидки на товары, затем один купон на остаток. Срок и лимиты купона
+              проверяются при оформлении. Цены фиксируются в заказе.
+            </p>
+            <p class="muted small">Учебный заказ. Оплата не требуется.</p>
+          </aside>
+        </div>
+      </section>
+      <section id="orders-view" hidden>
+        <div class="page-title">
+          <div>
+            <div class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</div>
+            <h1>Мои заказы</h1>
+            <p class="muted">Статус и электронный чек появятся здесь автоматически.</p>
+          </div>
+          <span id="event-status" class="badge">Подключение</span>
+        </div>
+        <div id="my-coupons" class="chips"></div>
+        <div id="orders-list" class="order-list"></div>
+      </section>
+      <section id="admin-view" hidden>
+        <div class="page-title">
+          <div>
+            <div class="eyebrow">УПРАВЛЕНИЕ BASKETNET</div>
+            <h1>Рабочее место администратора</h1>
+          </div>
+          <span id="broker-status" class="badge">Подключение</span>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="active" data-admin-tab="system" role="tab" aria-selected="true">
+            Система и нагрузка</button
+          ><button data-admin-tab="orders" role="tab" aria-selected="false">Все заказы</button
+          ><button data-admin-tab="products" role="tab" aria-selected="false">
+            Товары и купоны</button
+          ><button data-admin-tab="analytics" role="tab" aria-selected="false">
+            Аналитика и расчёты
+          </button>
+        </div>
+        <div id="admin-system" class="admin-page">
+          <div id="metrics" class="metrics"></div>
+          <div class="admin-grid">
+            <div class="panel">
+              <div class="eyebrow">НАГРУЗОЧНЫЙ ЭКСПЕРИМЕНТ</div>
+              <h2>Генератор заказов</h2>
+              <p class="muted">Создаёт тестовые корзины и отправляет расчёты настоящим воркерам.</p>
+              <form id="generator-form">
+                <div class="form-grid">
+                  <label
+                    >Всего заказов<input
+                      name="count"
+                      type="number"
+                      min="1"
+                      max="200"
+                      value="30"
+                      required /></label
+                  ><label
+                    >Одновременно в обработке<input
+                      name="concurrency"
+                      type="number"
+                      min="1"
+                      max="30"
+                      value="12"
+                      required /></label
+                  ><label
+                    >Нагрузка на один заказ<select name="load">
+                      <option value="mixed">Смешанная</option>
+                      <option value="light">Лёгкая: только чек</option>
+                      <option value="medium">Средняя: 500 000 итераций</option>
+                      <option value="heavy">Тяжёлая: 2 000 000 итераций</option>
+                    </select></label
+                  ><label
+                    >Приоритеты<select id="priority-mode">
+                      <option value="mixed">Разные, в заданном диапазоне</option>
+                      <option value="same">Одинаковые у всех</option>
+                    </select></label
+                  ><label
+                    >Минимальный приоритет<input
+                      name="priority_min"
+                      type="number"
+                      min="0"
+                      max="9"
+                      value="0"
+                      required /></label
+                  ><label
+                    >Максимальный приоритет<input
+                      name="priority_max"
+                      type="number"
+                      min="0"
+                      max="9"
+                      value="9"
+                      required
+                  /></label>
+                </div>
+                <button class="button dark full">Запустить серию →</button>
+                <p id="generator-error" class="form-error" role="alert"></p>
+              </form>
+              <p class="muted small">
+                9 - самый высокий приоритет. Уже работающие задания не прерываются. «Одновременно»
+                включает очередь и выполнение. Дополнительная нагрузка - синтетический расчёт PBKDF2
+                на CPU, она не меняет сумму чека.
+              </p>
+            </div>
+            <div class="stack">
+              <div class="panel">
+                <div class="section-heading">
+                  <h2>Воркеры</h2>
+                  <span class="muted small">UDP heartbeat</span>
+                </div>
+                <div id="workers"></div>
+              </div>
+              <div class="panel">
+                <div class="section-heading">
+                  <h2>Последняя серия</h2>
+                  <button id="stop-batch" class="text-button" hidden>Остановить подачу</button>
+                </div>
+                <div id="batch-progress" class="muted">
+                  Серий пока нет. Запустите первый эксперимент.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel spaced">
+            <h2>Очередь серии</h2>
+            <p class="muted small">
+              Время ожидания и выполнения считается по событиям брокера. Уже переданные задания
+              завершатся после остановки подачи.
+            </p>
+            <div id="batch-orders" class="table-wrap"></div>
+          </div>
+        </div>
+        <div id="admin-orders" class="admin-page" hidden>
+          <div class="section-heading spaced">
+            <h2>Заказы магазина</h2>
+            <label class="check"
+              ><input id="show-generated" type="checkbox" /> Показывать тестовые</label
+            >
+          </div>
+          <div id="admin-orders-list" class="order-list"></div>
+        </div>
+        <div id="admin-products" class="admin-page" hidden>
+          <div class="panel">
+            <h2>Каталог и распродажи</h2>
+            <p class="muted">
+              Измените цену или скидку. Уже оформленные заказы сохранят прежние цены.
+            </p>
+            <div id="admin-products-list" class="table-wrap"></div>
+          </div>
+          <form id="coupon-form" class="panel spaced">
+            <div class="section-heading"><h2 id="coupon-form-title">Создать купон</h2>
+              <button id="coupon-reset" type="button" class="text-button" hidden>Отменить редактирование</button></div>
+            <input name="original_code" type="hidden">
+            <div class="form-grid three">
+              <label
+                >Код купона<input
+                  name="code"
+                  placeholder="SUMMER15"
+                  pattern="[A-Za-z0-9]{3,20}"
+                  required /></label
+              ><label
+                >Скидка, %<input name="percent" type="number" min="1" max="90" value="15" required
+              /></label>
+              <label>Кому доступен<select name="audience"><option value="public">Всем, кто знает код</option><option value="personal">Личный купон</option></select></label>
+              <label id="coupon-login-field" hidden>Логин получателя<input name="login" maxlength="32"></label>
+              <label>Всего использований<input name="max_uses" type="number" min="1" max="1000000" placeholder="Без ограничений"></label>
+              <label>На одного покупателя<input name="per_user_limit" type="number" min="1" max="1000000" value="1" placeholder="Без ограничений"></label>
+              <label>Действует по дату включительно<input name="expires_on" type="date"></label>
+            </div>
+            <p class="muted small">Пустой лимит или дата - без ограничения. Срок заканчивается в 23:59:59 по Минску (UTC+3).
+              Редактирование не сбрасывает счётчик и не меняет уже оформленные заказы.</p>
+            <label class="check"><input name="active" type="checkbox" checked> Купон включён</label>
+            <button id="coupon-save" class="button dark">Создать купон</button>
+            <p class="form-error" role="alert"></p>
+          </form>
+          <div class="panel spaced"><h2>Созданные купоны</h2><p class="muted small">В счётчик входят готовые заказы и текущие резервы. При ошибке заказа резерв освобождается.</p><div id="admin-coupons-list" class="table-wrap"></div></div>
+        </div>
+        <div id="admin-analytics" class="admin-page" hidden>
+          <div class="admin-grid">
+            <div class="panel">
+              <h2>Аналитика магазина</h2>
+              <p class="muted">Последние 1 000 завершённых заказов. Расчёты выполняют воркеры.</p>
+              <label class="check"
+                ><input id="analytics-generated" type="checkbox" /> Включить тестовые заказы</label
+              >
+              <div class="stack">
+                <button class="button secondary" data-analysis="basket_affinity">
+                  Какие товары покупают вместе</button
+                ><button class="button secondary" data-analysis="count_words">
+                  Частота слов в названиях покупок</button
+                ><button class="button secondary" data-analysis="sort">
+                  Ранжирование каталога по цене
+                </button>
+              </div>
+              <hr />
+              <h2>Лаборатория расчётов</h2>
+              <form id="task-form">
+                <div class="form-grid">
+                  <label>Операция<select id="operation" name="operation"></select></label
+                  ><label
+                    >Приоритет<input
+                      name="priority"
+                      type="number"
+                      min="0"
+                      max="9"
+                      value="3"
+                      required
+                  /></label>
+                </div>
+                <p id="operation-description" class="muted small"></p>
+                <label for="task-data">Входные данные JSON</label
+                ><textarea id="task-data" rows="7" spellcheck="false"></textarea
+                ><button class="button dark full">Выполнить расчёт</button>
+                <p class="form-error" role="alert"></p>
+              </form>
+            </div>
+            <div class="panel">
+              <h2>Результаты расчётов</h2>
+              <div id="analysis-results" class="stack"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span class="brand-mini">BasketNet</span
+      ><span>Учебный магазин и распределённая обработка заказов</span
+      ><span>Цены в BYN • Без реальных платежей</span>
+    </footer>
+    <dialog id="auth-dialog">
+      <button class="close" data-close="auth-dialog" aria-label="Закрыть">×</button>
+      <div class="eyebrow">ВАШ ЛИЧНЫЙ BASKETNET</div>
+      <h2 id="auth-title">Рады видеть вас</h2>
+      <p class="muted" id="auth-hint">Войдите, чтобы собирать корзину и получать купоны.</p>
+      <form id="auth-form">
+        <label
+          >Логин<input
+            name="login"
+            autocomplete="username"
+            minlength="3"
+            maxlength="32"
+            required /></label
+        ><label
+          >Пароль<input
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            maxlength="128"
+            required
+        /></label>
+        <p class="form-error" role="alert"></p>
+        <button id="auth-submit" class="button dark full">Войти</button>
+      </form>
+      <button id="auth-switch" class="text-button">Нет аккаунта? Зарегистрироваться</button>
+    </dialog>
+    <dialog id="product-dialog">
+      <button class="close" data-close="product-dialog" aria-label="Закрыть">×</button>
+      <h2>Редактирование товара</h2>
+      <form id="product-form">
+        <input name="id" type="hidden" /><label
+          >Название<input name="name" maxlength="120" required
+        /></label>
+        <div class="form-grid">
+          <label>Категория<input name="category" maxlength="60" required /></label
+          ><label>Упаковка<input name="unit" maxlength="30" required /></label
+          ><label
+            >Цена, BYN<input
+              name="price"
+              type="number"
+              min="0.01"
+              max="100000"
+              step="0.01"
+              required /></label
+          ><label>Скидка, %<input name="discount" type="number" min="0" max="90" required /></label>
+        </div>
+        <label>Описание<textarea name="description" maxlength="250" required></textarea></label
+        ><label class="check"><input name="active" type="checkbox" /> Доступен для покупки</label>
+        <p class="form-error" role="alert"></p>
+        <button class="button dark full">Сохранить</button>
+      </form>
+    </dialog>
+    <div id="toast" role="status" hidden></div>
+  </body>
+</html>
