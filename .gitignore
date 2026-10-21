@@ -4,3 +4,13 @@ __pycache__/
 logs/
 task-*.json
 result-*.json
+data/
+*.sqlite3
+*.sqlite3-*
+*.sqlite3.admin.txt
+
+# Полная записка и рабочие документы остаются локально.
+/output/
+*.docx
+!docs/coursework/section-1.docx
+~$*
