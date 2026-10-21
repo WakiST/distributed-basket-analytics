@@ -12,5 +12,5 @@ data/
 # Полная записка и рабочие документы остаются локально.
 /output/
 *.docx
-!docs/coursework/section-1.docx
+!docs/coursework/ПЗ_Белковец.docx
 ~$*
